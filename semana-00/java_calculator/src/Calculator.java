@@ -19,7 +19,7 @@ public class Calculator {
         }
         return (float) a / b;
     }
-    
+
     public static void main(String[] args) {
         Calculator calc = new Calculator();
         System.out.println("The sum of 10 + 5 = " + calc.sum(10,5));

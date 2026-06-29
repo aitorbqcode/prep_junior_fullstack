@@ -1,0 +1,54 @@
+CREATE SCHEMA user_orders AUTHORIZATION postgres;
+
+SET search_path TO user_orders;
+
+BEGIN WORK;
+
+SET TRANSACTION READ WRITE;
+
+SET datestyle = DMY;
+
+-- create tables
+
+CREATE TABLE USERS (
+	user_id VARCHAR(8) PRIMARY KEY,
+	user_name VARCHAR NOT NULL,
+	user_phone VARCHAR(15) NOT NULL,
+	user_email VARCHAR NOT NULL,
+	user_town VARCHAR NOT NULL,
+	user_age INTEGER NOT NULL,
+	CONSTRAINT CHK_USER_ID CHECK (user_id LIKE 'US%'),
+	CONSTRAINT CHK_USER_AGE CHECK (user_age >= 16),
+	CONSTRAINT CHK_USER_PHONE CHECK (user_phone ~ '^\+?[0-9]{9,15}$')
+);
+
+CREATE TABLE ORDERS(
+	order_id VARCHAR(9) PRIMARY KEY,
+	user_id VARCHAR(8) NOT NULL,
+	order_date DATE NOT NULL,
+	shipping_priority VARCHAR NOT NULL,
+	order_status VARCHAR NOT NULL,
+	CONSTRAINT CHK_ORDER_ID CHECK (order_id LIKE 'ORD%'),
+	CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES USERS(user_id),
+    CONSTRAINT CHK_SHIPPING_PRIORITY CHECK (shipping_priority IN ('standard', 'express', 'urgent')),
+	CONSTRAINT CHK_STATUS CHECK (order_status IN ('pending', 'shipped', 'delivered'))
+);
+
+CREATE TABLE PRODUCTS(
+	product_id VARCHAR(10) PRIMARY KEY,
+	product_name VARCHAR(20) NOT NULL,
+	product_description VARCHAR(100) NOT NULL,
+	CONSTRAINT CHK_PRODUCT_ID CHECK (product_id LIKE 'PROD%')
+);
+
+CREATE TABLE ORDER_PRODUCT(
+	order_id VARCHAR(9) NOT NULL,
+	product_id VARCHAR(10) NOT NULL,
+	quantity INTEGER NOT NULL,
+	CONSTRAINT PK_ORDER_PRODUCT PRIMARY KEY (order_id, product_id),
+	CONSTRAINT FK_ORDER_ID FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
+	CONSTRAINT FK_PRODUCT_ID FOREIGN KEY (product_id) REFERENCES PRODUCTS(product_id),
+	CONSTRAINT CHK_ORDER_PRODUCT_QUANTITY CHECK (quantity > 0)
+);
+
+COMMIT WORK;
