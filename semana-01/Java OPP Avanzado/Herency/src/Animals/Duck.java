@@ -25,6 +25,6 @@ public class Duck extends Animal implements FlyingAnimal, SwimmingAnimal {
 
     @Override
     public void makeSound() {
-
+        System.out.println("Cuac!");
     }
 }
