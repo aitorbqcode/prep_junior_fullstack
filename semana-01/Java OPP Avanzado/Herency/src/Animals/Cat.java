@@ -1,3 +1,5 @@
+package Animals;
+
 public class Cat extends Animal {
 
     /* Var */
@@ -6,7 +8,7 @@ public class Cat extends Animal {
     /* Constructor */
     public Cat(String name, int numPaws, boolean hasOwner){
         super(name, numPaws);
-
+        setHasOwner(hasOwner);
     }
 
     /* Setter */

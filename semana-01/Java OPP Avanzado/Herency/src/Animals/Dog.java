@@ -1,7 +1,9 @@
+package Animals;
+
 public class Dog extends Animal{
 
     /* Var */
-    public String size;
+    public String race;
 
 
     public Dog(String name, int numPaws, String race) {
@@ -10,10 +12,10 @@ public class Dog extends Animal{
     }
 
     /* Setter */
-    public void setRace(String race) { this.size = race; }
+    public void setRace(String race) { this.race = race; }
 
     /* Getter */
-    public String getRace() { return size; }
+    public String getRace() { return race; }
 
     /* Methods */
     @Override
