@@ -1,10 +1,18 @@
+import Exceptions.ValidationException;
+
+/**
+ * Invariante de representación:
+ * - name != null && !name.isEmpty()
+ * - price >= 0
+ * - category != null && es un valor válido de Category
+ */
 public class Product {
 
     public String name;
     public double price;
     public Category category;
 
-    //Constructor
+    /* Constructor */
     public Product(String name, double price, String category){
         setName(name);
         setPrice(price);
@@ -13,19 +21,27 @@ public class Product {
 
     //Setters
     public void setName(String name) {
-        if(name != null){
-            this.name = name;
+        /* Check the name it's not empty or null */
+        if (name == null || name.isEmpty()){
+            throw new ValidationException("Name can't be null or empty");
         }
+        this.name = name;
     }
 
     public void setPrice(double price) {
-        this.price = Math.max(price, 0);
+        /* Check the price it's not null */
+        if(price < 0){
+            throw new ValidationException("The price can't be negative");
+        }
+        this.price = price;
     }
 
     public void setCategory(String category) {
-        if (category != null && Category.existEnum(category)){
-            this.category = Category.valueOf(category.toUpperCase());
+        /* Check the category exist in the enum and it's not null */
+        if (category == null || !Category.existEnum(category)){
+            throw new ValidationException("This category is not valid");
         }
+        this.category = Category.valueOf(category.toUpperCase());
     }
 
     //Getters
