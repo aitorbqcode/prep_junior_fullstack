@@ -4,7 +4,7 @@ public class Pedido {
 
     float price;
 
-    public Pedido(int price){
+    public Pedido(float price){
         setPrice(price);
     }
 
@@ -12,7 +12,7 @@ public class Pedido {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 }

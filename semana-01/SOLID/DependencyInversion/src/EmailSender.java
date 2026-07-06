@@ -1,4 +1,7 @@
-package PACKAGE_NAME;
+public class EmailSender implements MesageSender{
 
-public class EmailSender {
+    @Override
+    public String send(String message) {
+        return "Email message: " + message;
+    }
 }

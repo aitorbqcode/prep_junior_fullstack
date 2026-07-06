@@ -1,7 +1,12 @@
-public class NormalClient implements DiscountPedido{
+package Clients;
+
+import Interfaces.DiscountPedido;
+import Class.Pedido;
+
+public class NormalClient implements DiscountPedido {
 
     @Override
-    public float calculateDiscount(Pedido p) {
+    public double calculateDiscount(Pedido p) {
         return p.getPrice();
     }
 }

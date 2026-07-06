@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
-
 public class EmailService {
+
+    public void enviarEmailConfirmacion(Pedido p){}
 }

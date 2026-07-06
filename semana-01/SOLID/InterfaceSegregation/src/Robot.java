@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
-
-public class Robot {
+public class Robot implements Worker{
+    @Override
+    public void trabajar() {}
 }

@@ -1,4 +1,3 @@
-package PACKAGE_NAME;
-
-public interface MesajeSender {
+public interface MesageSender {
+    String send(String message);
 }

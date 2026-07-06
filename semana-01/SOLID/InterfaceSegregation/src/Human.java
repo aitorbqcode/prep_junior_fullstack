@@ -1,4 +1,11 @@
-package PACKAGE_NAME;
+public class Human implements Worker, SerVivo{
 
-public class Human {
+    @Override
+    public void comer() {}
+
+    @Override
+    public void dormir() {}
+
+    @Override
+    public void trabajar() {}
 }

@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
-
-public class SerVivo {
+public interface SerVivo {
+    void comer();
+    void dormir();
 }

@@ -1,4 +1,3 @@
-package PACKAGE_NAME;
-
 public class FacturaService {
+    public void generarFacturaPDF(Pedido p) {}
 }

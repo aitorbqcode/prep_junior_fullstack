@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
-
 public class GestorPedidos {
+
+    public void createPedido(Pedido p){}
 }

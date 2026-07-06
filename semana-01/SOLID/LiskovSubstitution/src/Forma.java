@@ -1,4 +1,5 @@
-package PACKAGE_NAME;
+public interface Forma {
 
-public class Forma {
+    //Area method
+    double area();
 }
