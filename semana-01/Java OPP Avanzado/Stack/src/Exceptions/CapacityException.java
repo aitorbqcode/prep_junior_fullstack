@@ -1,7 +1,7 @@
 package Exceptions;
 
-public class CapacityException extends RuntimeException {
-  public CapacityException(String message) {
-    super(message);
-  }
+public class CapacityException extends StackException {
+    public CapacityException(String message) {
+        super(message);
+    }
 }
