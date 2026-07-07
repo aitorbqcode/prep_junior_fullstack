@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Composition/Composition.iml" filepath="$PROJECT_DIR$/Composition/Composition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Exceptions/Exceptions.iml" filepath="$PROJECT_DIR$/Exceptions/Exceptions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GenericTypes/GenericTypes.iml" filepath="$PROJECT_DIR$/GenericTypes/GenericTypes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Colecctions/HashMap/HashMap.iml" filepath="$PROJECT_DIR$/Colecctions/HashMap/HashMap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Herency/Herency.iml" filepath="$PROJECT_DIR$/Herency/Herency.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Interfaces/Interfaces.iml" filepath="$PROJECT_DIR$/Interfaces/Interfaces.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Java OPP Avanzado.iml" filepath="$PROJECT_DIR$/.idea/Java OPP Avanzado.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stack/Stack.iml" filepath="$PROJECT_DIR$/Stack/Stack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Colecctions/StreamLambda/StreamLambda.iml" filepath="$PROJECT_DIR$/Colecctions/StreamLambda/StreamLambda.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Colecctions/TreeMap/TreeMap.iml" filepath="$PROJECT_DIR$/Colecctions/TreeMap/TreeMap.iml" />
+    </modules>
+  </component>
+</project>
