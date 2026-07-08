@@ -1,7 +1,7 @@
 package Exceptions;
 
-public class InsertException extends RuntimeException {
-  public InsertException(String message) {
-    super(message);
-  }
+public class InsertException extends AppException {
+    public InsertException(String message) {
+        super(message);
+    }
 }

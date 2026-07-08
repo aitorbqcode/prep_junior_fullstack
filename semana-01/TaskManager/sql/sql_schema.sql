@@ -1,0 +1,31 @@
+CREATE SCHEMA task_manager AUTHORIZATION postgres;
+
+SET search_path TO task_manager;
+
+BEGIN WORK;
+
+SET TRANSACTION READ WRITE;
+
+SET datestyle = DMY;
+
+-- create tables
+
+CREATE TABLE USERS (
+	user_id VARCHAR(8) PRIMARY KEY,
+	user_name VARCHAR(20) NOT NULL,
+	user_email VARCHAR(50) UNIQUE NOT NULL,
+	CONSTRAINT CHK_USER_ID CHECK (user_id LIKE 'US%')
+);
+
+CREATE TABLE TASKS (
+	task_id VARCHAR(8) PRIMARY KEY,
+	task_name VARCHAR(100) NOT NULL,
+	task_priority VARCHAR(20) NOT NULL,
+	completed BOOLEAN DEFAULT FALSE,
+	user_id VARCHAR(8) NOT NULL,
+	CONSTRAINT CHK_TASK_ID CHECK (task_id LIKE 'TS%'),
+	CONSTRAINT CHK_TASK_PRIORITY CHECK (task_priority IN ('LOW', 'MEDIUM', 'HIGH')),
+	CONSTRAINT FK_USER_ID FOREIGN KEY (user_id) REFERENCES USERS(user_id)
+);
+
+COMMIT WORK;
