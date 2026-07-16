@@ -1,29 +1,31 @@
 package com.tuapp.taskmanager.model;
 
 import com.tuapp.taskmanager.exception.ValidationException;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "tasks")
 public class Task {
 
     /* Var */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String title;
+
     private boolean completed;
 
     /* Constructor */
-    public Task(Long id, String title, boolean completed) {
-        setId(id);
+    public Task() {}
+
+    public Task(String title, boolean completed) {
         setTitle(title);
         setCompleted(completed);
     }
 
     /* Setters */
-
-    public void setId(Long id) {
-        if(id < 0){
-            throw new ValidationException("Id should be positive");
-        }
-        this.id = id;
-    }
 
     public void setTitle(String title) {
         if(title.trim().isEmpty()){

@@ -1,10 +1,19 @@
 package com.tuapp.taskmanager.repository;
 
 import com.tuapp.taskmanager.model.Task;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-public interface TaskRepository {
-    /* Methods to implements in the task repositories */
-    List<Task> findAll();
-    void save(Task task);
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    // Spring traduce el nombre del método automáticamente
+    List<Task> findByCompletedFalse();
+
+    // Query manual con JPQL
+    @Query("SELECT t FROM Task t WHERE t.completed = false ORDER BY t.title")
+    List<Task> findPendingTasksOrderedByTitle();
 }
