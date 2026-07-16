@@ -1,4 +1,7 @@
 import Exception.*;
+
+import java.util.Iterator;
+
 /**
  * Invariante de representación:
  * - counter >= 0
@@ -7,7 +10,7 @@ import Exception.*;
  * - counter > 1 → first != last && last.nextNode == null
  */
 
-public class LinkedList<T> {
+public class LinkedList<T>{
 
     private Node<T> first;
     private Node<T> last;
@@ -95,5 +98,23 @@ public class LinkedList<T> {
 
     public int size(){
         return counter;
+    }
+
+    public Iterator<T> iterator() {
+        return new LinkedListIterator();
+    }
+
+    private class LinkedListIterator implements Iterator<T> {
+        private Node<T> current = first; // empieza en el primer nodo
+
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        public T next() {
+            T element = current.getElement();
+            current = current.getNextNode(); // avanza al siguiente
+            return element;
+        }
     }
 }
