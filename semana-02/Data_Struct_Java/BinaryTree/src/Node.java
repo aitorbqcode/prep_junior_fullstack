@@ -1,4 +1,9 @@
-package PACKAGE_NAME;
+public class Node<T> {
+    public T value;
+    public Node<T> left;
+    public Node<T> right;
 
-public class Node {
+    public Node(T value) {
+        this.value = value;
+    }
 }

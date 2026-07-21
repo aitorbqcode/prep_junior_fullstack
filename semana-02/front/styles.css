@@ -1,0 +1,78 @@
+/* Importar google fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f4f9;
+}
+
+header{
+    /* Color fondo de este elemento y del texto */
+    background-color: rgb(126, 126, 126);
+    color: white;
+    /* Distancia entre filas*/
+    padding: 1rem;
+    /* Que se alinee el texto en el centro */
+    text-align: center;
+}
+
+/* Lista de elementos del header*/
+header nav ul {
+    list-style: none; /* Le quita los puntos a la lista del menú */
+    padding: 0;
+    /* Activamos flexbox*/
+    display: flex;
+    /* Centramos */ 
+    justify-content: center;
+    /* Distancia entre elementos */
+    gap: 20px;
+}
+
+/* Nav a puntos de la pagina */
+header nav a {
+    color: #003c79;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;          
+}
+
+.task-list {
+    list-style: none;
+}
+
+/* Center titles */
+#add-task h2, #check-task h2 {
+    text-align: center;
+    color: #333; /* O el color que elijas para tu paleta */
+}
+
+/* Selección específica solo para la lista de tareas */
+#check-task ul {
+    padding: 0;
+    max-width: 500px;
+    margin: 0 auto; 
+}
+
+/* Check task list elementos de la lista */
+#check-task li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+
+/* Footer centrado*/
+footer{
+    display: flex;
+    justify-content: center;
+    font-style:initial
+}
+
+

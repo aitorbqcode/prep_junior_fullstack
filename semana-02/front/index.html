@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!--Add a title in the browser page-->
+    <title> Task Manager </title>
+    <!--Add a connection bettwen this html file and css one-->
+    <link rel="stylesheet" href="styles.css">
+</head>
+    <body>
+        <!-- Title, logo, etc -->
+        <header>
+            <!-- We add the header with a title -->
+            <h1> Task Manager </h1>
+            <nav>
+                <!-- Let's me navagate to the selected part of the page with one click -->
+                <ul>
+                    <li><a href="#add-task"> Go to add task </a></li>
+                    <li><a href="#check-task"> Go to check your tasks </a></li>
+                </ul>
+            </nav>
+        </header> 
+
+        <main>
+            <section id="add-task">
+                <h2> Add your task </h2>
+                <!-- Add inputs we use form -->
+                <form>
+                    <!--Add a task label to describe what you need to add in the input-->
+                    <label for="task-text">Add your task name description: </label>
+                    <!-- Test input -->
+                    <input type="text" id="task-text" placeholder="Ej. Clean desk" required>
+                    <!-- Button -->
+                    <button type="submit">Add task</button>     
+                </form>
+            </section>
+            
+            <section id="check-task">
+                <h2> Check your tasks </h2>
+                <!-- Modify your created tasks -->
+                <ul class="task-list">
+                    <li class="task-item">
+                        <!-- Checkbox -->
+                        <input type="checkbox" id="task-1">
+                        <!-- Label con el texto de la tarea -->
+                        <label for="task-1">Clean desk</label>
+                        <!-- Button -->
+                        <button type="button">DeleteTask</button>
+                    </li>        
+                </ul>
+            </section>
+
+        </main>
+        
+        <!-- PIE DE PÁGINA: Derechos de autor -->
+        <footer>
+            <p> Task Manager. Rights.</p>
+        </footer>
+
+    </body> 
+</html>
