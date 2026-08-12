@@ -5,6 +5,22 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     background-color: #f4f4f9;
+
+    /* --- IMPLEMENTACIÓN DE CSS GRID --- */
+    /* Activamos el grid */
+    display: grid;
+    /* Como tenemos en body el header, main y footer como los elementos de dentro mas externos de esta forma nos referimos a ellos
+    en el mismo orden en la pantalla 
+     auto es para decir que este componente debe medir lo que necesite 
+     Como solo hay un 1fr el resto del espacio se lo queda el main
+     Y para el footer el espacio que necesite*/
+    grid-template-rows: auto 1fr auto; 
+    /* Dejamos una columna para todo esto con un tamaño minimo maximo de 300 y 800 px */
+    grid-template-columns: minmax(300px, 800px); 
+    /* Centra la columna horizontalmente en la pantalla */
+    justify-content: center;
+    /* Asegura que la Grid ocupe como mínimo el 100% de la altura de la ventana */
+    min-height: 100vh; 
 }
 
 header{
