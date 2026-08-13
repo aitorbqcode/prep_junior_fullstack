@@ -1,6 +1,6 @@
 public class BinarySearchTree<T extends Comparable<T>> {
 
-    private static class Node<T> {
+    public static class Node<T> {
         T value;
         Node<T> left;
         Node<T> right;
@@ -23,9 +23,9 @@ public class BinarySearchTree<T extends Comparable<T>> {
         this.root = insertRecursive(this.root, value);
     }
 
-    // 2. Método auxiliar privado que viaja por el árbol
+    // Recursive insert
     private Node<T> insertRecursive(Node<T> current, T value) {
-        // Caso base: si llegamos a un espacio vacío, creamos el nodo aquí
+        // Si llegamos a un espacio vacío, creamos el nodo aquí
         if (current == null) {
             return new Node<>(value);
         }
@@ -45,12 +45,12 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
 
-    // 1. Método público
+    // Search a value
     public boolean search(T value) {
         return searchRecursive(this.root, value);
     }
 
-    // 2. Método auxiliar privado recursivo
+    // Recursive search
     private boolean searchRecursive(Node<T> current, T value) {
         // Caso base 1: Llegamos al final del árbol y no encontramos el valor
         if (current == null) {
@@ -70,5 +70,56 @@ public class BinarySearchTree<T extends Comparable<T>> {
         } else {
             return searchRecursive(current.right, value); // Buscar a la derecha
         }
+    }
+
+    public void delete(T value) {
+        root = deleteRecursive(root, value);
+    }
+
+    private Node<T> deleteRecursive(Node<T> current, T value) {
+        if (current == null) {
+            return null; // El elemento no se encuentra en el árbol
+        }
+
+        int comparison = value.compareTo(current.value);
+
+        // 1. Buscar el nodo a eliminar
+        if (comparison < 0) {
+            current.left = deleteRecursive(current.left, value);
+        } else if (comparison > 0) {
+            current.right = deleteRecursive(current.right, value);
+        } else {
+            // ¡Nodo encontrado! Aplicar los 3 casos:
+
+            // CASO 1: Nodo hoja (sin hijos)
+            if (current.left == null && current.right == null) {
+                return null;
+            }
+
+            // CASO 2: Nodo con UN SOLO hijo
+            if (current.left == null) {
+                return current.right; // Retorna el hijo derecho para sustituir al padre
+            }
+            if (current.right == null) {
+                return current.left;  // Retorna el hijo izquierdo para sustituir al padre
+            }
+
+            // CASO 3: Nodo con DOS hijos
+            // A. Buscar el valor mínimo del subárbol derecho (sucesor inorden)
+            T smallestValue = findMinValue(current.right);
+
+            // B. Reemplazar el valor del nodo actual por el del sucesor inorden
+            current.value = smallestValue;
+
+            // C. Eliminar el sucesor inorden del subárbol derecho
+            current.right = deleteRecursive(current.right, smallestValue);
+        }
+
+        return current;
+    }
+
+    // Método auxiliar para encontrar el mínimo (el nodo más a la izquierda)
+    private T findMinValue(Node<T> node) {
+        return node.left == null ? node.value : findMinValue(node.left);
     }
 }
