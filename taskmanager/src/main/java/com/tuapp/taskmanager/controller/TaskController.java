@@ -54,4 +54,10 @@ public class TaskController {
     public List<TaskResponseDTO> getPendingTasksOrdered() {
         return taskService.getPendingTasksOrdered();
     }
+
+    @GetMapping("/pending/by-user")
+    public ResponseEntity<List<TaskResponseDTO>> getPendingTasksOrderedByUser() {
+        List<TaskResponseDTO> tasks = taskService.getPendingTasksOrderedByUser();
+        return ResponseEntity.ok(tasks);
+    }
 }

@@ -16,4 +16,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     // Query manual con JPQL
     @Query("SELECT t FROM Task t WHERE t.completed = false ORDER BY t.title")
     List<Task> findPendingTasksOrderedByTitle();
+
+    // Find pending tasks by user query
+    @Query("SELECT t FROM Task t JOIN FETCH t.user WHERE t.completed = false ORDER BY t.user.name")
+    List<Task> findPendingTasksOrderedByUserName();
 }

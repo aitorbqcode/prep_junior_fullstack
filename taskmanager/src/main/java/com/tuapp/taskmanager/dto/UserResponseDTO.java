@@ -1,4 +1,7 @@
 package com.tuapp.taskmanager.dto;
 
-public class UserResponseDTO {
-}
+public record UserResponseDTO(
+        Long id,
+        String email,
+        String name
+){}

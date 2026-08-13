@@ -75,4 +75,16 @@ public class TaskService {
                 .map(this::toResponseDTO)
                 .toList();
     }
+
+    public List<TaskResponseDTO> getPendingTasksOrderedByUser() {
+        return taskRepository.findPendingTasksOrderedByUserName()
+                .stream()
+                .map(task -> new TaskResponseDTO(
+                        task.getId(),
+                        task.getTitle(),
+                        task.isCompleted(),
+                        task.getUser() != null ? task.getUser().getId() : null
+                ))
+                .toList();
+    }
 }
