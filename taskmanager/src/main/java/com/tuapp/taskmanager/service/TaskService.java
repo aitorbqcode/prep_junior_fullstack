@@ -4,7 +4,9 @@ import com.tuapp.taskmanager.dto.TaskCreateDTO;
 import com.tuapp.taskmanager.dto.TaskResponseDTO;
 import com.tuapp.taskmanager.exception.NotFoundException;
 import com.tuapp.taskmanager.model.Task;
+import com.tuapp.taskmanager.model.User;
 import com.tuapp.taskmanager.repository.TaskRepository;
+import com.tuapp.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,12 @@ import java.util.List;
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     public List<TaskResponseDTO> getAllTasks() {
@@ -25,6 +29,21 @@ public class TaskService {
                 .toList();
     }
 
+    // Método para crear tarea asignando usuario (usado por UserController)
+    public TaskResponseDTO createTask(Long userId, TaskCreateDTO dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found: " + userId));
+
+        Task task = new Task();
+        task.setTitle(dto.title());
+        task.setCompleted(false);
+        task.setUser(user);
+
+        Task saved = taskRepository.save(task);
+        return toResponseDTO(saved);
+    }
+
+    // ✅ Añade este método sobrecargado para crear tarea SIN usuario (usado por TaskController)
     public TaskResponseDTO createTask(TaskCreateDTO dto) {
         Task task = new Task();
         task.setTitle(dto.title());
