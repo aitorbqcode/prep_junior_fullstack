@@ -6,10 +6,15 @@
     /* Paleta de Colores */
     --color-primary: #04AA6D;         /* Verde del botón principal */
     --color-primary-hover: #038a58;   /* Verde más oscuro al pasar el ratón */
+    --color-danger: #e74c3c;          /* Rojo para eliminar */
+    --color-danger-hover: #c0392b;    /* Rojo más oscuro al pasar ratón */
     --color-header-bg: #7e7e7e;       /* Gris del encabezado */
     --color-bg: #f4f4f9;              /* Fondo claro general */
+    --color-card-bg: #ffffff;         /* Fondo blanco para las tarjetas */
     --color-text: #333333;            /* Texto principal */
+    --color-muted: #666666;           /* Texto secundario / emails */
     --color-white: #ffffff;           /* Blanco puro */
+    --color-border: #dddddd;          /* Color para bordes */
     
     /* Tipografía */
     --font-family: 'Roboto', sans-serif;
@@ -22,11 +27,10 @@
     --spacing-xl: 1rem;
 
     /* Bordes */
-    --border-radius: 4px;
+    --border-radius: 6px;
 }
 
 /* ================ RESET AND BASE ============== */
-/* Estilo base (para smarthphones)*/
 
 body {
     font-family: var(--font-family);
@@ -35,133 +39,204 @@ body {
     color: var(--color-text);
 
     /* --- IMPLEMENTACIÓN DE CSS GRID --- */
-    /* Activamos el grid */
     display: grid;
-    /* Como tenemos en body el header, main y footer como los elementos de dentro mas externos de esta forma nos referimos a ellos
-    en el mismo orden en la pantalla 
-     auto es para decir que este componente debe medir lo que necesite 
-     Como solo hay un 1fr el resto del espacio se lo queda el main
-     Y para el footer el espacio que necesite*/
     grid-template-rows: auto 1fr auto; 
-    /* Dejamos una columna para todo esto con un tamaño minimo maximo de 300 y 800 px */
     grid-template-columns: 100%; 
-    /* Centra la columna horizontalmente en la pantalla */
     justify-content: center;
-    /* Asegura que la Grid ocupe como mínimo el 100% de la altura de la ventana */
     min-height: 100vh; 
 }
 
 /* ================ TYPOGRAPHY ============== */
-/* Center titles */
-#add-task h2,
-#check-task h2 {
+h2 {
     text-align: center;
-    color: var(--color-text); /* O el color que elijas para tu paleta */
+    color: var(--color-text);
+    margin-top: var(--spacing-lg);
 }
 
 /* ================ LAYOUT ============== */
 
-header{
-    /* Color fondo de este elemento y del texto */
+header {
     background-color: var(--color-header-bg);
     color: var(--color-white);
-    /* Distancia entre filas*/
     padding: var(--spacing-xl);
-    /* Que se alinee el texto en el centro */
     text-align: center;
 }
 
-/* Lista de elementos del header*/
 header nav ul {
-    list-style: none; /* Le quita los puntos a la lista del menú */
+    list-style: none;
     padding: 0;
-    /* Activamos flexbox*/
     display: flex;
-    /* Centramos */ 
     justify-content: center;
-    /* Distancia entre elementos */
     gap: var(--spacing-lg);
 }
 
-/* Nav a puntos de la pagina */
 header nav a {
     color: var(--color-white);
     text-decoration: none;
+    font-weight: bold;
 }
 
-/* Footer centrado*/
-footer{
+header nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: var(--spacing-md);
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+footer {
     display: flex;
     justify-content: center;
-    font-style:var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: #e0e0e0;
 }
 
 /* ================ COMPONENTS ============== */
 
+/* Form Styling */
 form {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: stretch;
     gap: var(--spacing-sm);
-    padding: 0 var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    margin-bottom: var(--spacing-lg);
 }
 
-/* Selección específica solo para la lista de tareas */
-#check-task ul {
-    padding: 0 15px;
-    max-width: 500px;
-    margin: 0 auto; 
+input[type="text"],
+input[type="email"],
+select {
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 14px;
 }
 
-/* Check task list elementos de la lista */
-#check-task li {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px;
+label {
+    font-weight: bold;
+    font-size: 14px;
 }
 
-
-
-/* Botón responsive full-width en móvil */
+/* Buttons */
 .block {
     display: block;
     width: 100%;
     border: none;
-    background-color: #04AA6D;
+    background-color: var(--color-primary);
     color: white;
     padding: 12px 20px;
     font-size: 16px;
     cursor: pointer;
     text-align: center;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing-xs);
 }
 
 .block:hover {
     background-color: var(--color-primary-hover);
 }
 
+.btn-delete {
+    background-color: var(--color-danger);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-delete:hover {
+    background-color: var(--color-danger-hover);
+}
+
+/* User Cards & Task Lists */
+.user-card {
+    background-color: var(--color-card-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--color-bg);
+    padding-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
+.user-header h3 {
+    margin: 0;
+    color: var(--color-primary);
+}
+
+.user-email {
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px dashed var(--color-border);
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Tarea completada con texto tachado */
+.task-completed {
+    text-decoration: line-through;
+    color: var(--color-muted);
+}
+
 /* ================ RESPONSIVE ============== */
-/* Estilo pantallas grandes o tablets */
 
 @media (min-width: 768px) {
-    /* Limitamos y centramos el ancho del body en pantallas grandes */
     body {
         grid-template-columns: minmax(300px, 800px);
     }
 
-    /* En escritorio el formulario vuelve a ponerse en horizontal */
     form {
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: auto 1fr;
         align-items: center;
+        gap: var(--spacing-md);
     }
 
-    /* En escritorio los botones ya no ocupan todo el ancho */
+    form label {
+        text-align: right;
+    }
+
     .block {
+        grid-column: span 2;
         width: auto;
+        justify-self: center;
     }
 }
-
-
