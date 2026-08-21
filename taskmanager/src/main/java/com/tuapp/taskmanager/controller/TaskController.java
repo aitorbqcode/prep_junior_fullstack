@@ -2,7 +2,6 @@ package com.tuapp.taskmanager.controller;
 
 import com.tuapp.taskmanager.dto.TaskCreateDTO;
 import com.tuapp.taskmanager.dto.TaskResponseDTO;
-import com.tuapp.taskmanager.model.Task;
 import com.tuapp.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ public class TaskController {
     public ResponseEntity<List<TaskResponseDTO>> getAllTasks() {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
+
     @PostMapping
     public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskCreateDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(dto));
@@ -35,29 +35,30 @@ public class TaskController {
     public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Long id) {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
+
     @PutMapping("/{id}/complete")
-    public TaskResponseDTO completeTask(@PathVariable Long id) {
-        return taskService.completeTask(id);
+    public ResponseEntity<TaskResponseDTO> completeTask(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.completeTask(id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+        return ResponseEntity.noContent().build(); // Devuelve 204 No Content
     }
 
     @GetMapping("/pending")
-    public List<TaskResponseDTO> getPendingTasks() {
-        return taskService.getPendingTasks();
+    public ResponseEntity<List<TaskResponseDTO>> getPendingTasks() {
+        return ResponseEntity.ok(taskService.getPendingTasks());
     }
 
     @GetMapping("/pending/ordered")
-    public List<TaskResponseDTO> getPendingTasksOrdered() {
-        return taskService.getPendingTasksOrdered();
+    public ResponseEntity<List<TaskResponseDTO>> getPendingTasksOrdered() {
+        return ResponseEntity.ok(taskService.getPendingTasksOrdered());
     }
 
     @GetMapping("/pending/by-user")
     public ResponseEntity<List<TaskResponseDTO>> getPendingTasksOrderedByUser() {
-        List<TaskResponseDTO> tasks = taskService.getPendingTasksOrderedByUser();
-        return ResponseEntity.ok(tasks);
+        return ResponseEntity.ok(taskService.getPendingTasksOrderedByUser());
     }
 }

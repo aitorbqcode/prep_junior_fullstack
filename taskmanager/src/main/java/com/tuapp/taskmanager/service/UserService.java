@@ -8,6 +8,7 @@ import com.tuapp.taskmanager.model.User;
 import com.tuapp.taskmanager.repository.TaskRepository;
 import com.tuapp.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import com.tuapp.taskmanager.dto.TaskResponseDTO;
 
 import java.util.List;
 
@@ -50,9 +51,17 @@ public class UserService {
     }
 
     /* Obtener tareas de un usuario */
-    public List<Task> getTasksByUserId(Long id) {
+    /* Obtener tareas de un usuario mapeadas a DTO */
+    public List<TaskResponseDTO> getTasksByUserId(Long id) {
         User user = findEntityById(id);
-        return user.getTasks();
+        return user.getTasks().stream()
+                .map(task -> new TaskResponseDTO(
+                        task.getId(),
+                        task.getTitle(),
+                        task.isCompleted(),
+                        user.getId()
+                ))
+                .toList();
     }
 
     /* Eliminar usuario */

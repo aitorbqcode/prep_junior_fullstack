@@ -4,7 +4,6 @@ import com.tuapp.taskmanager.dto.TaskCreateDTO;
 import com.tuapp.taskmanager.dto.TaskResponseDTO;
 import com.tuapp.taskmanager.dto.UserCreateDTO;
 import com.tuapp.taskmanager.dto.UserResponseDTO;
-import com.tuapp.taskmanager.model.Task;
 import com.tuapp.taskmanager.service.TaskService;
 import com.tuapp.taskmanager.service.UserService;
 import jakarta.validation.Valid;
@@ -51,13 +50,14 @@ public class UserController {
             @PathVariable Long userId,
             @Valid @RequestBody TaskCreateDTO dto) {
 
-        // ✅ Llama al servicio inyectado (de instancia, no estático)
+        // Llama al servicio inyectado (de instancia, no estático)
         TaskResponseDTO createdTask = taskService.createTask(userId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
+    //  CORRECTO: Devuelve List<TaskResponseDTO>
     @GetMapping("/{userId}/tasks")
-    public ResponseEntity<List<Task>> getTasksByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<TaskResponseDTO>> getTasksByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getTasksByUserId(userId));
     }
 
