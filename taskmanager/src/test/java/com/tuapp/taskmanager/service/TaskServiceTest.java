@@ -2,7 +2,7 @@ package com.tuapp.taskmanager.service;
 
 import com.tuapp.taskmanager.dto.TaskCreateDTO;
 import com.tuapp.taskmanager.dto.TaskResponseDTO;
-import com.tuapp.taskmanager.exception.NotFoundException;
+import com.tuapp.taskmanager.exception.NotFoundTaskException;
 import com.tuapp.taskmanager.model.Task;
 import com.tuapp.taskmanager.repository.TaskRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -90,7 +90,7 @@ class TaskServiceTest {
 
         // Act & Assert: Comprobamos que al buscar esa tarea salte una excepcion
         assertThatThrownBy(() -> taskService.getTaskById(99L))
-                .isInstanceOf(NotFoundException.class);
+                .isInstanceOf(NotFoundTaskException.class);
 
         //Comprobamos que se haya realizado solo una vez
         verify(taskRepository, times(1)).findById(99L);

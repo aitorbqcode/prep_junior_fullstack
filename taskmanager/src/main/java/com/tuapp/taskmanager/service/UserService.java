@@ -2,7 +2,7 @@ package com.tuapp.taskmanager.service;
 
 import com.tuapp.taskmanager.dto.UserCreateDTO;
 import com.tuapp.taskmanager.dto.UserResponseDTO;
-import com.tuapp.taskmanager.exception.NotFoundException;
+import com.tuapp.taskmanager.exception.NotFoundTaskException;
 import com.tuapp.taskmanager.model.Task;
 import com.tuapp.taskmanager.model.User;
 import com.tuapp.taskmanager.repository.TaskRepository;
@@ -73,7 +73,7 @@ public class UserService {
     /* Eliminar usuario */
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new NotFoundException("User not found: " + id);
+            throw new NotFoundTaskException("User not found: " + id);
         }
         userRepository.deleteById(id);
     }
@@ -89,7 +89,7 @@ public class UserService {
 
     private User findEntityById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found: " + id));
+                .orElseThrow(() -> new NotFoundTaskException("User not found: " + id));
     }
 
     private UserResponseDTO mapToResponseDTO(User user) {

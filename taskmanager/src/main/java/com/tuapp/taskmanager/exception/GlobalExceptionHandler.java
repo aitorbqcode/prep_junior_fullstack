@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     // Salta cuando se da una tarea que no existe
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex, HttpServletRequest request) {
+    @ExceptionHandler(NotFoundTaskException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundTaskException ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
@@ -73,5 +73,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<String> handleDuplicateResource(DuplicateResourceException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    public ResponseEntity<String> handleNonExistingUser(NotFoundUserException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 }
