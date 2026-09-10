@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
+
     private final TaskService taskService;
 
     @Autowired
@@ -21,9 +22,10 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    // 👈 CAMBIO AQUÍ: Devuelve todas las tareas si es ADMIN, o solo las del usuario si es ROLE_USER
     @GetMapping
     public ResponseEntity<List<TaskResponseDTO>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+        return ResponseEntity.ok(taskService.getTasksForCurrentUser());
     }
 
     @PostMapping
@@ -44,7 +46,7 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
-        return ResponseEntity.noContent().build(); // Devuelve 204 No Content
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/pending")

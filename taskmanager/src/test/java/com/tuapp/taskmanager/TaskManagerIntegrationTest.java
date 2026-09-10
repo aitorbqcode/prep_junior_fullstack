@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,9 +33,10 @@ class TaskManagerIntegrationTest {
     private TaskRepository taskRepository;
 
     // -------------------------------------------------------------
-    // 1. Crear un usuario -> espera 201 Created
+    // 1. Crear un usuario -> publica/permitAll o autenticada
     // -------------------------------------------------------------
     @Test
+    @WithMockUser(username = "admin@test.com")
     void createUser_withValidData_returns201() throws Exception {
         String newUserJson = """
             {
@@ -57,6 +57,7 @@ class TaskManagerIntegrationTest {
     // 2. Obtener un usuario que no existe -> espera 404 Not Found
     // -------------------------------------------------------------
     @Test
+    @WithMockUser(username = "user@test.com")
     void getUser_whenDoesNotExist_returns404() throws Exception {
         mockMvc.perform(get("/api/users/99999"))
                 .andExpect(status().isNotFound());
@@ -66,8 +67,8 @@ class TaskManagerIntegrationTest {
     // 3. Crear una tarea con título vacío -> espera 400 Bad Request
     // -------------------------------------------------------------
     @Test
+    @WithMockUser(username = "user@test.com")
     void createTask_withEmptyTitle_returns400() throws Exception {
-        // Primero persistimos un usuario real en H2
         User user = userRepository.save(new User("Test User", "user@test.com", "edfsefef"));
 
         String invalidTaskJson = """
@@ -86,17 +87,26 @@ class TaskManagerIntegrationTest {
     // 4. Completar una tarea -> espera 200 OK y completed: true
     // -------------------------------------------------------------
     @Test
+    @WithMockUser(username = "user2@test.com")
     void completeTask_whenValid_returns200AndCompletedTrue() throws Exception {
-        // Opción recomendada usando tus helper methods:
         User user = new User("Test User 2", "user2@test.com", "swhfdskh");
         Task task = new Task("Tarea pendiente", false);
 
-        user.addTask(task); // Asocia la tarea al usuario y viceversa
-        userRepository.save(user); // Guarda ambos si tienes CascadeType.ALL
+        user.addTask(task);
+        userRepository.save(user);
 
-        // Ejecutamos la petición para marcarla como completada (ejemplo usando PATCH o PUT)
         mockMvc.perform(put("/api/tasks/" + task.getId() + "/complete"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.completed").value(true));
+    }
+
+    // -------------------------------------------------------------
+    // 5. TEST DE SEGURIDAD: Acceso sin autenticación -> espera 401 Unauthorized
+    // -------------------------------------------------------------
+    @Test
+    void getTasks_unauthenticated_returns401() throws Exception {
+        mockMvc.perform(get("/api/users/1/tasks"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("Token inválido o expirado"));
     }
 }

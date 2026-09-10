@@ -2,6 +2,7 @@ package com.tuapp.taskmanager.service;
 
 import com.tuapp.taskmanager.dto.UserCreateDTO;
 import com.tuapp.taskmanager.dto.UserResponseDTO;
+import com.tuapp.taskmanager.dto.UserTaskSummary;
 import com.tuapp.taskmanager.exception.NotFoundTaskException;
 import com.tuapp.taskmanager.model.Task;
 import com.tuapp.taskmanager.model.User;
@@ -40,6 +41,17 @@ public class UserService {
         User user = new User(dto.name(), dto.email(), encodedPassword);
         User savedUser = userRepository.save(user);
 
+        return mapToResponseDTO(savedUser);
+    }
+
+    /* Crear usuario Administrador directamente */
+    public UserResponseDTO createAdminUser(UserCreateDTO dto) {
+        String encodedPassword = passwordEncoder.encode(dto.password());
+
+        User user = new User(dto.name(), dto.email(), encodedPassword);
+        user.setRole(com.tuapp.taskmanager.model.Role.ROLE_ADMIN); // Asigna explicitamente el Enum de Admin (o Role.ADMIN)
+
+        User savedUser = userRepository.save(user);
         return mapToResponseDTO(savedUser);
     }
 
@@ -104,5 +116,10 @@ public class UserService {
             // Las tareas ya están cargadas en memoria, NO se lanzan más queries
             System.out.println("Usuario " + user.getName() + " tiene " + user.getTasks().size() + " tareas.");
         }
+    }
+
+    // Dentro de UserService.java
+    public List<UserTaskSummary> getUserStats() {
+        return userRepository.getUserTaskSummary();
     }
 }

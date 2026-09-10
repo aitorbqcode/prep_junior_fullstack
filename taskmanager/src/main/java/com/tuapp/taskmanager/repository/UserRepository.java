@@ -1,5 +1,6 @@
 package com.tuapp.taskmanager.repository;
 
+import com.tuapp.taskmanager.dto.UserTaskSummary;
 import com.tuapp.taskmanager.model.Task;
 import com.tuapp.taskmanager.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,5 +24,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String email);
+
+    // Consulta nativa apuntando a la vista SQL creada en PostgreSQL
+    @Query(value = "SELECT * FROM public.user_task_summary", nativeQuery = true)
+    List<UserTaskSummary> getUserTaskSummary();
 }
 

@@ -6,6 +6,7 @@ import com.tuapp.taskmanager.dto.UserCreateDTO;
 import com.tuapp.taskmanager.dto.UserResponseDTO;
 import com.tuapp.taskmanager.exception.DuplicateResourceException;
 import com.tuapp.taskmanager.exception.NotFoundUserException;
+import com.tuapp.taskmanager.model.Role;
 import com.tuapp.taskmanager.model.User;
 import com.tuapp.taskmanager.service.JwtService;
 import com.tuapp.taskmanager.service.UserService;
@@ -49,17 +50,38 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
+    @PostMapping("/register/admin")
+    public ResponseEntity<?> registerAdmin(@Valid @RequestBody UserCreateDTO dto) {
+        if (userRepository.existsByEmail(dto.email())) {
+            throw new DuplicateResourceException("El email ya está registrado: " + dto.email());
+        }
+
+        // Forzamos el rol ADMIN al construir el usuario
+        User adminUser = new User(
+                dto.name(),
+                dto.email(),
+                passwordEncoder.encode(dto.password()),
+                Role.ROLE_ADMIN
+        );
+
+        userRepository.save(adminUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Administrador creado con éxito");
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
         // 1. Buscar usuario por email → si no existe, lanzar 401
         User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new NotFoundUserException("Credenciales inválidas"));
+
         // 2. Verificar contraseña con passwordEncoder.matches()
         if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
             throw new NotFoundUserException("Credenciales inválidas");
         }
-        // 3. Generar JWT con jwtService.generateToken()
-        String token = jwtService.generateToken(dto.email());
+
+        // 3. Generar JWT pasando la entidad 'user' completa (con email y rol)
+        String token = jwtService.generateToken(user);
 
         // 4. Devolver 200 con el token
         return ResponseEntity.ok(new LoginResponseDTO(token, dto.email()));

@@ -6,19 +6,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-//Garantiza que el codigo se ejecute una vez por cada peticion HTTP, basicamente nos sirve porque las API REST con JWT son STATELESS(es decir no estan con sesion abierta en el servidor)
-// por lo que se genera un token, de forma que se comprueba el token antes de llegar al controller, leyendo el token que sea real y que no haya expirado
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -36,29 +32,45 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-        // Si no hay header o no empieza por "Bearer ", dejamos pasar sin autenticar
+
+        // Si no hay header o no empieza por "Bearer ", dejamos pasar la petición
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);  // quita "Bearer " limpiamos para quedarnos solo con el token
+        String token = authHeader.substring(7); // Quita "Bearer "
 
-        // Si el token es valida carga el email y el
+        // Intentamos validar el token y autenticar al usuario
         if (jwtService.isTokenValid(token)) {
             String email = jwtService.extractEmail(token);
 
-            // Buscamos el usuario directamente en el repositorio
-            UserDetails userDetails = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
+            try {
+                // Buscamos el usuario en el repositorio
+                UserDetails userDetails = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
 
-            // Registra la autenticación en el contexto de Spring Security
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                // Registra la autenticación en el contexto de Spring Security
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities()
+                );
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+            } catch (UsernameNotFoundException e) {
+                // Si el usuario guardado en el token ya no existe en la BD (por ejemplo, tras recrearla),
+                // limpiamos el contexto para que continúe como petición no autenticada en vez de lanzar un 500
+                SecurityContextHolder.clearContext();
+            }
         }
 
-        // Permite que la petición continúe su viaje hacia el @RestControlle
+        // Permite que la petición continúe su viaje hacia el controller
         filterChain.doFilter(request, response);
     }
 
+    // Omite este filtro por completo para endpoints de autenticación públicos
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.startsWith("/auth/");
+    }
 }

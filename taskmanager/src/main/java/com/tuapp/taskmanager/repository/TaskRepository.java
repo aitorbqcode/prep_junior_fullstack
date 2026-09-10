@@ -10,6 +10,9 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
+    // Busca todas las tareas de un usuario específico
+    List<Task> findByUserId(Long userId);
+
     // Spring traduce el nombre del método automáticamente
     List<Task> findByCompletedFalse();
 

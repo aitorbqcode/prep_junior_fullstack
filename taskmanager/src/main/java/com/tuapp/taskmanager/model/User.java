@@ -3,6 +3,7 @@ package com.tuapp.taskmanager.model;
 import com.tuapp.taskmanager.exception.ValidationException;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -26,6 +27,11 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;  // aquí va el hash BCrypt, nunca el texto plano
 
+    // Campo de Rol persistido como String
+    @Enumerated(EnumType.STRING) //Nos asegura que en la base de datos el valor se guarde como string en vez de como numeros
+    @Column(nullable = false)
+    private Role role = Role.ROLE_USER;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
@@ -37,6 +43,15 @@ public class User implements UserDetails {
         setName(name);
         setEmail(email);
         setPassword(password);
+        this.role = Role.ROLE_USER; // Rol por defecto
+    }
+
+    /* Constructor sobrecargado con Rol opcional */
+    public User(String name, String email, String password, Role role) {
+        setName(name);
+        setEmail(email);
+        setPassword(password);
+        setRole(role);
     }
 
     /* Setters */
@@ -62,6 +77,13 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public void setRole(Role role) {
+        if (role == null) {
+            throw new ValidationException("Role can't be null");
+        }
+        this.role = role;
+    }
+
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
@@ -80,6 +102,8 @@ public class User implements UserDetails {
         return email;
     }
 
+    public Role getRole() { return role; }
+
     public List<Task> getTasks() {
         return tasks;
     }
@@ -96,9 +120,12 @@ public class User implements UserDetails {
         task.setUser(null);
     }
 
+    /* Spring Security - UserDetails */
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        // Convierte el Enum Role a SimpleGrantedAuthority
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override

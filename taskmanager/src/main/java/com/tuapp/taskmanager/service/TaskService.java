@@ -8,12 +8,15 @@ import com.tuapp.taskmanager.model.User;
 import com.tuapp.taskmanager.repository.TaskRepository;
 import com.tuapp.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TaskService {
+
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
@@ -23,13 +26,20 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public List<TaskResponseDTO> getAllTasks() {
-        return taskRepository.findAll().stream()
+    // Retorna todas las tareas si es ADMIN, o solo las asignadas si es ROLE_USER
+    public List<TaskResponseDTO> getTasksForCurrentUser() {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (currentUser.getRole().name().equals("ROLE_ADMIN")) {
+            return taskRepository.findAll().stream().map(this::toResponseDTO).toList();
+        }
+
+        return taskRepository.findByUserId(currentUser.getId()).stream()
                 .map(this::toResponseDTO)
                 .toList();
     }
 
-    // Método para crear tarea asignando usuario (usado por UserController)
+    // Método para crear tarea asignando un usuario específico mediante su ID (usado por UserController)
     public TaskResponseDTO createTask(Long userId, TaskCreateDTO dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundTaskException("User not found: " + userId));
@@ -43,11 +53,14 @@ public class TaskService {
         return toResponseDTO(saved);
     }
 
-    // ✅ Añade este método sobrecargado para crear tarea SIN usuario (usado por TaskController)
+    // Método para crear tarea asociada al usuario actualmente autenticado
     public TaskResponseDTO createTask(TaskCreateDTO dto) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Task task = new Task();
         task.setTitle(dto.title());
         task.setCompleted(false);
+        task.setUser(currentUser);
 
         Task saved = taskRepository.save(task);
         return toResponseDTO(saved);
@@ -68,14 +81,33 @@ public class TaskService {
     }
 
     public void deleteTask(Long id) {
-        if (!taskRepository.existsById(id)) {
-            throw new NotFoundTaskException("Task not found: " + id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new NotFoundTaskException("Task not found: " + id));
+
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Si no es ADMIN y la tarea no es suya, rechazamos la petición con 403 Forbidden
+        if (!currentUser.getRole().name().equals("ROLE_ADMIN") && !task.getUser().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("No tienes permiso para borrar esta tarea");
         }
-        taskRepository.deleteById(id);
+
+        taskRepository.delete(task);
     }
 
     public List<TaskResponseDTO> getPendingTasks() {
         return taskRepository.findByCompletedFalse().stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
+    public List<TaskResponseDTO> getPendingTasksOrdered() {
+        return taskRepository.findPendingTasksOrderedByTitle().stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
+    public List<TaskResponseDTO> getPendingTasksOrderedByUser() {
+        return taskRepository.findPendingTasksOrderedByUserName().stream()
                 .map(this::toResponseDTO)
                 .toList();
     }
@@ -89,21 +121,10 @@ public class TaskService {
         );
     }
 
-    public List<TaskResponseDTO> getPendingTasksOrdered() {
-        return taskRepository.findPendingTasksOrderedByTitle().stream()
+    // Método para obtener la totalidad de tareas de la base de datos (usado en tests y vistas de administración)
+    public List<TaskResponseDTO> getAllTasks() {
+        return taskRepository.findAll().stream()
                 .map(this::toResponseDTO)
-                .toList();
-    }
-
-    public List<TaskResponseDTO> getPendingTasksOrderedByUser() {
-        return taskRepository.findPendingTasksOrderedByUserName()
-                .stream()
-                .map(task -> new TaskResponseDTO(
-                        task.getId(),
-                        task.getTitle(),
-                        task.isCompleted(),
-                        task.getUser() != null ? task.getUser().getId() : null
-                ))
                 .toList();
     }
 }
