@@ -21,7 +21,7 @@ public class Stack<T> {
     //Constructor
     public Stack(int capacity){
         setCapacity(capacity);
-        this.elements = new Object[getCapacity()];;
+        this.elements = new Object[getCapacity()];
         this.top = 0;
     }
 

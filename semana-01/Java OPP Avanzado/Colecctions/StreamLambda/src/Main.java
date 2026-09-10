@@ -41,7 +41,8 @@ public class Main {
         System.out.println("---------------------- Get the product with the higher price ----------------------");
 
         //Order by category
-        Optional<Product> highestPrice = list.stream().max(Comparator.comparingDouble(Product::getPrice));
+        Optional<Product> highestPrice = list.stream()
+                .max(Comparator.comparingDouble(Product::getPrice));
 
         System.out.println("The most expensive product is: " + highestPrice.get().getName());
 
