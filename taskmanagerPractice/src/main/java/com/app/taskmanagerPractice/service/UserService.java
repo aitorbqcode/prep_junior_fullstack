@@ -4,11 +4,13 @@ import com.app.taskmanagerPractice.dto.TaskResponseDTO;
 import com.app.taskmanagerPractice.dto.UserCreateDTO;
 import com.app.taskmanagerPractice.dto.UserResponseDTO;
 import com.app.taskmanagerPractice.exception.NotFoundException;
+import com.app.taskmanagerPractice.interfaces.UserTaskSummary;
 import com.app.taskmanagerPractice.model.Task;
 import com.app.taskmanagerPractice.model.User;
 import com.app.taskmanagerPractice.repository.TaskRepository;
 import com.app.taskmanagerPractice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -96,6 +98,14 @@ public class UserService {
                         user.getId()
                 ))
                 .toList();
+    }
+
+
+    //Devuelve el User Task Summary. Es la vista creada en postgreeSQL
+    //Solo un user con rol admin puede acceder a esta función
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public List<UserTaskSummary> getStats() {
+        return userRepository.getUserTaskSummary();
     }
 
     //Función para pasar un user a formato UserResponseDTO.

@@ -1,6 +1,7 @@
 package com.app.taskmanagerPractice.controller;
 
 import com.app.taskmanagerPractice.dto.UserResponseDTO;
+import com.app.taskmanagerPractice.interfaces.UserTaskSummary;
 import com.app.taskmanagerPractice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,10 @@ public class AdminController {
     public ResponseEntity<List<UserResponseDTO>> getAllUsersForAdmin() {
         // Reutilizamos la lógica que ya tenías en tu UserService
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/stats")
+    public List<UserTaskSummary> getStats() {
+        return userService.getStats();
     }
 }

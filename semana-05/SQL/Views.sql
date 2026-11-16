@@ -7,16 +7,16 @@ SELECT
     COUNT(t.id) AS total_tasks,
     SUM(CASE WHEN t.completed THEN 1 ELSE 0 END) AS completed_tasks,
     SUM(CASE WHEN NOT t.completed THEN 1 ELSE 0 END) AS pending_tasks,
-    ROUND(
-        100.0 * SUM(CASE WHEN t.completed THEN 1 ELSE 0 END) / NULLIF(COUNT(t.id), 0),
-        1
-    ) AS completion_rate
+    ROUND( 100.0 * SUM(CASE WHEN t.completed THEN 1 ELSE 0 END) / NULLIF(COUNT(t.id), 0), 1 )
+	AS completion_rate
 FROM users u
 LEFT JOIN tasks t ON t.user_id = u.id
 GROUP BY u.id, u.name, u.email;
 
--- Úsala como si fuera una tabla:
+-- La usamos como una tabla, donde comprobamos aquellos users que tenga un 50% de completion_rate
 SELECT * FROM user_task_summary WHERE completion_rate > 50;
+
+
 
 -- 1. Asegurar que la tabla tasks tiene un campo de fecha (opcional si no lo tenías)
 ALTER TABLE tasks ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
@@ -33,6 +33,7 @@ SELECT
     u.email AS user_email
 FROM tasks t
 JOIN users u ON t.user_id = u.id
+-- Crea un intervalo desde hoy hasta 7 dias antes de hoy
 WHERE t.created_at >= NOW() - INTERVAL '7 days';
 
 

@@ -1,5 +1,6 @@
 package com.app.taskmanagerPractice.repository;
 
+import com.app.taskmanagerPractice.interfaces.UserTaskSummary;
 import com.app.taskmanagerPractice.model.Task;
 import com.app.taskmanagerPractice.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,4 +34,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Como Spring sabe que User tiene un atributo llamado email, con el nombre del atributo que viene con el JpaRepository entiende
     // que queremos buscar un User, a traves del email.
     Optional<User> findByEmail(String email);
+
+    //Seleccionamos la view para obtener los datos de esta tabla.
+    @Query(value = "SELECT * FROM user_task_summary", nativeQuery = true)
+    List<UserTaskSummary> getUserTaskSummary();
 }
